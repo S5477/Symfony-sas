@@ -20,6 +20,7 @@ class ConferenceCrudController extends AbstractCrudController
     {
         return [
             IdField::new('id')->hideWhenCreating()->hideWhenUpdating(),
+            TextField::new('slug')->hideWhenCreating()->hideWhenUpdating(),
             TextField::new('city'),
             TextField::new('year'),
             BooleanField::new('isInternational'),

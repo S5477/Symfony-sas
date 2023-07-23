@@ -32,7 +32,6 @@ class ConferenceController extends AbstractController
     {
         return new Response($this->twig->render(
             'conference/index.html.twig',
-            ['conferences' => $conferenceRepository->findAll()]
             )
         );
     }
@@ -42,7 +41,7 @@ class ConferenceController extends AbstractController
      * @throws RuntimeError
      * @throws LoaderError
      */
-    #[Route('/conference/{id}', name: 'conference')]
+    #[Route('/conference/{slug}', name: 'conference')]
     public function show(Request $request, Conference $conference, CommentRepository $commentRepository, ConferenceRepository $conferenceRepository): Response
     {
         $offset = max(0, $request->query->getInt('offset', 0));
@@ -51,7 +50,6 @@ class ConferenceController extends AbstractController
         return new Response($this->twig->render(
                 'conference/show.html.twig',
                 [
-                    'conferences' => $conferenceRepository->findAll(),
                     'conference' => $conference,
                     'comments' => $paginator,
                     'previous' => $offset - CommentRepository::PAGINATOR_PER_PAGE,

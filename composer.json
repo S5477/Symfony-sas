@@ -18,6 +18,7 @@
         "symfony/framework-bundle": "5.4.*",
         "symfony/monolog-bundle": "^3.8",
         "symfony/runtime": "5.4.*",
+        "symfony/string": "5.4.*",
         "symfony/yaml": "5.4.*",
         "twig/extra-bundle": "^3.6",
         "twig/intl-extra": "^3.6"

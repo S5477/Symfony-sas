@@ -24,7 +24,7 @@ class CommentCrudController extends AbstractCrudController
             TextField::new('text'),
             TextField::new('email'),
             TextField::new('photoFileName'),
-            DateTimeField::new('createdAt'),
+            DateTimeField::new('createdAt')->hideWhenCreating(),
             AssociationField::new('conference')->autocomplete()
         ];
     }
