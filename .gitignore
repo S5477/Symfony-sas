@@ -1,4 +1,6 @@
 .idea
+ /**/.idea/*
+ .idea/*
 ###> symfony/framework-bundle ###
 /.env.local
 /.env.local.php
@@ -8,3 +10,4 @@
 /var/
 /vendor/
 ###< symfony/framework-bundle ###
+/public/uploads/photos/*
