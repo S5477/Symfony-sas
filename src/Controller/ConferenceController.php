@@ -5,14 +5,14 @@ namespace App\Controller;
 use App\Entity\Comment;
 use App\Entity\Conference;
 use App\Form\CommentFormType;
+use App\Message\Comment\Message;
 use App\Repository\CommentRepository;
-use App\Repository\ConferenceRepository;
-use App\Services\ApiStubService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\File\Exception\FileException;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\Messenger\MessageBusInterface;
 use Symfony\Component\Routing\Annotation\Route;
 use Twig\Environment;
 use Twig\Error\LoaderError;
@@ -24,10 +24,17 @@ class ConferenceController extends AbstractController
     private Environment $twig;
     private EntityManagerInterface $entityManager;
 
-    public function __construct(Environment $twig, EntityManagerInterface $entityManager)
+    private MessageBusInterface $bus;
+
+    public function __construct(
+        Environment $twig,
+        EntityManagerInterface $entityManager,
+        MessageBusInterface $bus
+    )
     {
         $this->twig = $twig;
         $this->entityManager = $entityManager;
+        $this->bus = $bus;
     }
 
     /**
@@ -36,7 +43,7 @@ class ConferenceController extends AbstractController
      * @throws LoaderError
      */
     #[Route('/', name: 'homepage')]
-    public function index(ConferenceRepository $conferenceRepository): Response
+    public function index(): Response
     {
         return new Response($this->twig->render(
             'conference/index.html.twig',
@@ -50,7 +57,12 @@ class ConferenceController extends AbstractController
      * @throws LoaderError
      */
     #[Route('/conference/{slug}', name: 'conference')]
-    public function show(Request $request, Conference $conference, CommentRepository $commentRepository, ApiStubService $apiStubService, string $photoDir): Response
+    public function show(
+        Request $request,
+        Conference $conference,
+        CommentRepository $commentRepository,
+        string $photoDir
+    ): Response
     {
         $comment = new Comment();
         $form = $this->createForm(CommentFormType::class, $comment);
@@ -74,7 +86,7 @@ class ConferenceController extends AbstractController
             $this->entityManager->persist($comment);
             $this->entityManager->flush();
 
-            $apiStubService->sendComment($comment);
+            $this->bus->dispatch(new Message($comment->getId()));
 
             return $this->redirectToRoute('conference', [
                 'slug' => $conference->getSlug(),
