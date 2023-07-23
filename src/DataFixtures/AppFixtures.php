@@ -35,6 +35,7 @@ class AppFixtures extends Fixture
         $comment = new Comment();
         $comment->setConference($amsterdam);
         $comment->setAuthor('Fabien');
+        $comment->setState('published');
         $comment->setEmail('fabien@example.com');
         $comment->setText('This was a great conference.');
         $manager->persist($comment);
