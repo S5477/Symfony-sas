@@ -7,6 +7,7 @@ use App\Entity\Conference;
 use App\Form\CommentFormType;
 use App\Repository\CommentRepository;
 use App\Repository\ConferenceRepository;
+use App\Services\ApiStubService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\File\Exception\FileException;
@@ -49,7 +50,7 @@ class ConferenceController extends AbstractController
      * @throws LoaderError
      */
     #[Route('/conference/{slug}', name: 'conference')]
-    public function show(Request $request, Conference $conference, CommentRepository $commentRepository, string $photoDir): Response
+    public function show(Request $request, Conference $conference, CommentRepository $commentRepository, ApiStubService $apiStubService, string $photoDir): Response
     {
         $comment = new Comment();
         $form = $this->createForm(CommentFormType::class, $comment);
@@ -72,6 +73,8 @@ class ConferenceController extends AbstractController
 
             $this->entityManager->persist($comment);
             $this->entityManager->flush();
+
+            $apiStubService->sendComment($comment);
 
             return $this->redirectToRoute('conference', [
                 'slug' => $conference->getSlug(),
