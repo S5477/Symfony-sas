@@ -1,7 +1,6 @@
 <?php
 
 namespace App\MessageHandler;
-use AllowDynamicProperties;
 use App\Message\Comment\Message;
 use App\Repository\CommentRepository;
 use Doctrine\ORM\EntityManagerInterface;
@@ -69,7 +68,7 @@ class CommentMessageHandler implements MessageHandlerInterface
         } elseif ($this->workflow->can($comment, 'publish') || $this->workflow->can($comment, 'publish_ham')) {
             $this->mailer->send(new NotificationEmail())
                 ->subject('New comment')
-                ->htmlTempalte('emails/comment.html.twig')
+                ->htmlTempalte('emails/comment_notification.html.twig')
                 ->from($this->adminEmail)
                 ->to($this->adminEmail)
                 ->context(['comment' => $comment]);
